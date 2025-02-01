@@ -1,0 +1,8 @@
+package org.orient.bookstorebackend.repository;
+
+import org.orient.bookstorebackend.model.entity.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+
+}
