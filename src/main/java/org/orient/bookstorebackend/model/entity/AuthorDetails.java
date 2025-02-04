@@ -11,12 +11,14 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 @Data
 @Entity
 @Table(name = "author_details")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString(exclude = "author")
 public class AuthorDetails {
 
     @Id

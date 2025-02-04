@@ -24,7 +24,7 @@ import java.util.Set;
 @Entity
 @Table(name = "authors")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ToString(exclude = "books")
+@ToString(exclude = {"books", "authorDetails"})
 public class Author {
 
     @Id
