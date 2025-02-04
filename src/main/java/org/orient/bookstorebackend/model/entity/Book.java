@@ -19,16 +19,18 @@ import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
 @Entity
+@SQLRestriction("active = true")
 @Table(name = "books")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString(exclude = "category")
@@ -64,7 +66,7 @@ public class Book {
             foreignKey = @ForeignKey(name = "fk_book_author_book"),
             inverseForeignKey = @ForeignKey(name = "fk_book_author_author")
     )
-    Set<Author> authors = new LinkedHashSet<>();
+    List<Author> authors = new ArrayList<>();
 
     @CreationTimestamp
     @Column(updatable = false)

@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ import java.util.List;
 
 @Data
 @Entity
+@SQLRestriction("active = true")
 @Table(name = "categories")
 @NoArgsConstructor
 @ToString(exclude = "books")
@@ -45,7 +47,7 @@ public class Category {
     @Column(nullable = false)
     Boolean active = Boolean.TRUE;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     List<Book> books = new ArrayList<>();
 
     @CreationTimestamp

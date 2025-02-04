@@ -1,21 +1,54 @@
 package org.orient.bookstorebackend.model.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
-@Data
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookDto {
 
-    Long id;
-    String title;
-    String description;
-    BigDecimal price;
-    Boolean active;
+    @Data
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class CreateRequest {
+
+        @NotBlank
+        String title;
+        String description;
+        @NotNull
+        BigDecimal price;
+        @NotNull
+        Long categoryId;
+        Set<Long> authorIds;
+
+    }
+
+    @Data
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class UpdateRequest {
+
+        String title;
+        String description;
+        BigDecimal price;
+        Long categoryId;
+        Set<Long> authorIds;
+
+    }
+
+    @Data
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class Response {
+
+        Long id;
+        String title;
+        String description;
+        BigDecimal price;
+        CategoryDto.Response category;
+        Set<AuthorDto.Response> authors;
+
+    }
 
 }
