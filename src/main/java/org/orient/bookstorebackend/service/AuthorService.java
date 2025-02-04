@@ -22,12 +22,12 @@ public class AuthorService {
     public AuthorDto.Response createAuthor(AuthorDto.CreateRequest request) {
         Author author = AuthorMapper.INSTANCE.toEntity(request);
         Author savedAuthor = authorRepository.save(author);
-        return  AuthorMapper.INSTANCE.toResponse(savedAuthor);
+        return AuthorMapper.INSTANCE.toResponse(savedAuthor);
     }
 
     public AuthorDto.Response getAuthor(Long id) {
         return authorRepository.findById(id)
-                .map( AuthorMapper.INSTANCE::toResponse)
+                .map(AuthorMapper.INSTANCE::toResponse)
                 .orElseThrow(() -> new EntityNotFoundException("Author not found"));
     }
 }

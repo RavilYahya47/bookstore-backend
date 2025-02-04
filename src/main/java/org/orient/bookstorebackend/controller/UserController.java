@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.orient.bookstorebackend.model.dto.UserCreateDto;
-import org.orient.bookstorebackend.model.entity.User;
 import org.orient.bookstorebackend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
