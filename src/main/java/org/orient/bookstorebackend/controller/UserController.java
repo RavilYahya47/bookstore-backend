@@ -4,7 +4,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.orient.bookstorebackend.model.dto.UserCreateDto;
+import org.orient.bookstorebackend.model.response.UserDetailedResponse;
 import org.orient.bookstorebackend.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,13 +25,17 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> registerUser(@RequestBody UserCreateDto user) {
-        userService.createUser(user);
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+                .status(201)
+                .body(userService.registerUser(user));
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(userService.getUserById(id));
+    @GetMapping("{id}/detailed")
+    public ResponseEntity<UserDetailedResponse> getUserById(@PathVariable Long id){
+        UserDetailedResponse detailedResponse = userService.getUserById(id);
+
+        return new ResponseEntity<>(detailedResponse, HttpStatus.OK);
+
     }
 
 

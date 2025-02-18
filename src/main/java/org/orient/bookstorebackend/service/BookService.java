@@ -3,6 +3,7 @@ package org.orient.bookstorebackend.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.orient.bookstorebackend.exception.BookNotFoundException;
 import org.orient.bookstorebackend.exception.EntityNotFoundException;
 import org.orient.bookstorebackend.model.dto.BookDto;
 import org.orient.bookstorebackend.model.entity.Author;
@@ -44,9 +45,9 @@ public class BookService {
     public BookDto.Response getBookById(Long id, boolean includeInactive) {
         Book book = includeInactive
                 ? bookRepository.findByIdIncludingInactive(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book not found"))
+                .orElseThrow(() -> new BookNotFoundException("Book not found"))
                 : bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book not found"));
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
         return BookMapper.INSTANCE.toResponse(book);
     }
 

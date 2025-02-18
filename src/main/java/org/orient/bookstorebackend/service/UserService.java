@@ -5,12 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.orient.bookstorebackend.model.dto.UserCreateDto;
-import org.orient.bookstorebackend.model.entity.User;
-import org.orient.bookstorebackend.model.entity.UserDetails;
-import org.orient.bookstorebackend.model.response.UserResponse;
+import org.orient.bookstorebackend.model.response.UserDetailedResponse;
+import org.orient.bookstorebackend.model.response.UserShortResponse;
 import org.orient.bookstorebackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
@@ -19,51 +18,33 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     UserRepository userRepository;
+    RestTemplate restTemplate;
 
-    public void createUser(UserCreateDto userCreateDto) {
+    public UserShortResponse registerUser(UserCreateDto userCreateDto) {
+        var response = restTemplate.postForEntity(
+                "http://localhost:8081/v1/users",
+                userCreateDto,
+                UserShortResponse.class);
 
-        var user = new User();
-        user.setUsername(userCreateDto.getUsername());
-        user.setPassword(userCreateDto.getPassword());
+        var userShortResponse = response.getBody();
 
-        var userDetails = new UserDetails();
-        userDetails.setAge(userCreateDto.getAge());
-        userDetails.setFirstName(userCreateDto.getFistName());
-        userDetails.setLastName(userCreateDto.getLastName());
+        log.info("Registered user: {}", userShortResponse);
 
-        user.setUserDetails(userDetails);
-        userDetails.setUser(user);
-
-        var savedUser = userRepository.save(user);
-
-        log.info("Created user: {}", user.getId());
-
+        return userShortResponse;
     }
 
-    @Transactional
-    public User getUserById(Long id) {
+    public UserDetailedResponse getUserById(Long id) {
 
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User with id " + id + " not found"));
+        String uri = "http://localhost:8081/v1/users/" + id +"/detailed";
 
-        var userResponse = new UserResponse();
+        var response  = restTemplate.getForObject(
+                uri,
+                UserDetailedResponse.class
+        );
 
-        userResponse.setUsername(user.getUsername());
-        userResponse.setFistName(user.getUserDetails().getFirstName());
-        userResponse.setLastName(user.getUserDetails().getLastName());
-        userResponse.setAge(user.getUserDetails().getAge());
+        log.info("getUserById: {}", response);
 
-        log.info(user.getUserDetails().toString());
-
-//        user.getUserDetails().getAddresses()
-//                .stream()
-//                .map(address -> address.getCity()
-//                        .concat(" ")
-//                        .concat(address.getStreet()))
-//                .forEach(address -> userResponse.getAddresses().add(address));
-
-        log.info("User info retrieved with id: {}", user.getId());
-
-        return user;
+        return response;
     }
+
 }
