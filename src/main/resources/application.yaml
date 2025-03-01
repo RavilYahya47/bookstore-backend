@@ -11,3 +11,10 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+
+jwt:
+  secret: orient-academy-very-very-secret-key
+  access:
+    expiration: 60000
+  refresh:
+    expiration: 86400000
