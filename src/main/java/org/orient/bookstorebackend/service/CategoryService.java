@@ -8,6 +8,9 @@ import org.orient.bookstorebackend.model.dto.CategoryDto;
 import org.orient.bookstorebackend.model.entity.Category;
 import org.orient.bookstorebackend.repository.CategoryRepository;
 import org.orient.bookstorebackend.util.mapper.CategoryMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

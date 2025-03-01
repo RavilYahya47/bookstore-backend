@@ -10,11 +10,12 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 @Data
 @Entity
-//@ToString(exclude = {"addresses"})
+@ToString(exclude = {"user"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "user_details")
 public class UserDetails {
@@ -32,9 +33,5 @@ public class UserDetails {
     String firstName;
     String lastName;
     Integer age;
-
-//    @OneToMany(mappedBy = "userDetails", fetch = FetchType.EAGER, orphanRemoval = true)
-//    List<Address> addresses = new ArrayList<>();
-
 
 }

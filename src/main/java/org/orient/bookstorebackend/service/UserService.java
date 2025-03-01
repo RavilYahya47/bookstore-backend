@@ -4,12 +4,14 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.orient.bookstorebackend.model.dto.UserCreateDto;
-import org.orient.bookstorebackend.model.response.UserDetailedResponse;
+import org.orient.bookstorebackend.exception.EntityNotFoundException;
+import org.orient.bookstorebackend.model.request.UserRegisterRequest;
+import org.orient.bookstorebackend.model.entity.User;
+import org.orient.bookstorebackend.model.entity.UserDetails;
 import org.orient.bookstorebackend.model.response.UserShortResponse;
 import org.orient.bookstorebackend.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
@@ -18,33 +20,43 @@ import org.springframework.web.client.RestTemplate;
 public class UserService {
 
     UserRepository userRepository;
-    RestTemplate restTemplate;
+    PasswordEncoder passwordEncoder;
 
-    public UserShortResponse registerUser(UserCreateDto userCreateDto) {
-        var response = restTemplate.postForEntity(
-                "http://localhost:8081/v1/users",
-                userCreateDto,
-                UserShortResponse.class);
+    public UserShortResponse getUserByUsername(String username) {
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        log.info("Fetched user: {}", user);
 
-        var userShortResponse = response.getBody();
-
-        log.info("Registered user: {}", userShortResponse);
-
-        return userShortResponse;
+        return UserShortResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .build();
     }
 
-    public UserDetailedResponse getUserById(Long id) {
+    public UserShortResponse register(UserRegisterRequest userRegisterRequest) {
+        var user = new User();
 
-        String uri = "http://localhost:8081/v1/users/" + id +"/detailed";
+        var encryptedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
 
-        var response  = restTemplate.getForObject(
-                uri,
-                UserDetailedResponse.class
-        );
+        user.setUsername(userRegisterRequest.getUsername());
+        user.setPassword(encryptedPassword);
 
-        log.info("getUserById: {}", response);
+        var userDetails = new UserDetails();
+        userDetails.setUser(user);
+        user.setUserDetails(userDetails);
 
-        return response;
+        var savedUser = userRepository.save(user);
+
+        return UserShortResponse.builder()
+                .id(savedUser.getId())
+                .username(savedUser.getUsername())
+                .build();
+    }
+
+    public UserShortResponse getUserById(Long userId) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return UserShortResponse.builder().id(user.getId()).username(user.getUsername()).build();
     }
 
 }

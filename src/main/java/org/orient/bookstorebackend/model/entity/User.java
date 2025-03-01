@@ -11,10 +11,15 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
-@Entity
+import java.util.List;
+
+
 @Data
+@Entity
+@ToString(exclude = "userDetails")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "users")
 public class User {
